@@ -1,23 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pricing Results - Option Pricing Engine</title>
+    <title>Results — Option Pricing Engine</title>
     <meta name="description" content="Option pricing results and model comparison">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --primary: #2E86AB;
-            --secondary: #A23B72;
-            --accent: #F18F01;
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #212529;
-            --text-muted: #6c757d;
-            --border: #dee2e6;
-            --success: #28a745;
-            --warning: #ffc107;
+            --bg: #fff;
+            --bg-alt: #f8f8f8;
+            --text: #000;
+            --text-muted: #666;
+            --border: #000;
+            --border-light: #ddd;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0a0a0a;
+            --bg-alt: #141414;
+            --text: #fff;
+            --text-muted: #888;
+            --border: #fff;
+            --border-light: #333;
         }
 
         * {
@@ -27,16 +36,18 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Roboto Mono', monospace;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
+            font-size: 14px;
+            transition: background 0.3s, color 0.3s;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 3rem 2rem;
         }
 
         header {
@@ -44,214 +55,327 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--primary);
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
         }
 
         h1 {
-            color: var(--primary);
-            font-size: 1.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
         }
 
         .btn {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.75rem;
             font-weight: 600;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid var(--border);
             text-decoration: none;
+            color: var(--text);
+            background: var(--bg);
             transition: all 0.2s;
         }
 
-        .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
+        .btn:hover {
+            background: var(--text);
+            color: var(--bg);
         }
 
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+        .theme-btn {
+            width: 44px;
+            height: 24px;
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
         }
 
-        .card h2 {
-            color: var(--primary);
-            font-size: 1.25rem;
+        .theme-btn::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: var(--text);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        [data-theme="dark"] .theme-btn::after {
+            transform: translateX(20px);
+        }
+
+        .metadata {
+            background: var(--bg-alt);
+            border: 1px solid var(--border-light);
+            padding: 1rem 1.25rem;
+            margin-bottom: 2rem;
+            font-size: 0.8rem;
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .metadata-item {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .metadata-label {
+            font-weight: 600;
+        }
+
+        .metadata-value {
+            color: var(--text-muted);
+        }
+
+        .signature {
+            font-size: 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border-light);
+            padding: 0.15rem 0.4rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--border);
         }
 
-        .metadata {
-            background: #e3f2fd;
-            border-radius: 4px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .metadata-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.5rem;
-        }
-
-        .metadata-item {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .metadata-label {
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .signature {
-            font-family: monospace;
-            font-size: 0.85rem;
-            background: #f1f3f5;
-            padding: 0.25rem 0.5rem;
-            border-radius: 3px;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 1rem;
         }
 
         th,
         td {
-            padding: 0.75rem;
+            padding: 0.75rem 1rem;
             text-align: left;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.85rem;
         }
 
         th {
-            background: #f8f9fa;
+            font-size: 0.7rem;
             font-weight: 600;
-            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--bg-alt);
+            border-bottom: 1px solid var(--border);
         }
 
-        .price-value {
-            font-size: 1.25rem;
+        .price-cell {
+            font-size: 1.1rem;
             font-weight: 700;
-            color: var(--primary);
         }
 
-        .error-value {
-            font-size: 0.9rem;
+        .error-cell {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .baseline-tag {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             color: var(--text-muted);
         }
 
-        .warning-badge {
+        .warning-tag {
             display: inline-block;
-            background: var(--warning);
-            color: #212529;
+            font-size: 0.65rem;
+            padding: 0.15rem 0.4rem;
+            background: var(--bg-alt);
+            border: 1px solid var(--border-light);
+            margin-left: 0.25rem;
+        }
+
+        .summary-text {
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-alt);
+            border-left: 3px solid var(--border);
+        }
+
+        .summary-text strong {
+            font-weight: 600;
+        }
+
+        .greeks-container {
+            margin-top: 1.5rem;
+        }
+
+        .greeks-model {
+            margin-bottom: 1.5rem;
+        }
+
+        .greeks-model-name {
             font-size: 0.75rem;
-            padding: 0.15rem 0.5rem;
-            border-radius: 3px;
-            margin-left: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+            color: var(--text-muted);
         }
 
         .greeks-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 1rem;
-            text-align: center;
+            gap: 0;
+            border: 1px solid var(--border);
         }
 
         .greek-item {
-            background: #f8f9fa;
             padding: 1rem;
-            border-radius: 4px;
+            text-align: center;
+            border-right: 1px solid var(--border-light);
+        }
+
+        .greek-item:last-child {
+            border-right: none;
         }
 
         .greek-name {
+            font-size: 0.65rem;
             font-weight: 600;
-            color: var(--primary);
-            text-transform: capitalize;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
         }
 
         .greek-value {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            margin-top: 0.25rem;
         }
 
-        .plot-container {
-            text-align: center;
-            margin: 1rem 0;
+        .plot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
         }
 
         .plot-container img {
-            max-width: 100%;
+            width: 100%;
             height: auto;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-light);
         }
 
-        .assumptions-list,
-        .warnings-list {
+        .assumptions-list {
             list-style: none;
-            padding: 0;
+            font-size: 0.8rem;
         }
 
-        .assumptions-list li,
-        .warnings-list li {
-            padding: 0.25rem 0;
-            padding-left: 1.25rem;
+        .assumptions-list li {
+            padding: 0.35rem 0;
+            padding-left: 1rem;
             position: relative;
+            border-bottom: 1px solid var(--border-light);
         }
 
         .assumptions-list li::before {
-            content: "•";
+            content: "—";
             position: absolute;
             left: 0;
-            color: var(--primary);
+            color: var(--text-muted);
         }
 
-        .warnings-list li::before {
-            content: "⚠";
-            position: absolute;
-            left: 0;
+        .model-assumptions {
+            margin-bottom: 1.5rem;
         }
 
-        .disclaimer {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 4px;
-            padding: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .disclaimer h3 {
-            color: #856404;
+        .model-assumptions-title {
+            font-size: 0.8rem;
+            font-weight: 600;
             margin-bottom: 0.5rem;
         }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
+        .disclaimer {
+            background: var(--bg-alt);
+            border: 1px solid var(--border-light);
+            border-left: 3px solid var(--border);
+            padding: 1rem 1.25rem;
+            font-size: 0.75rem;
+        }
+
+        .disclaimer-title {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            font-size: 0.7rem;
         }
 
         footer {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.7rem;
             color: var(--text-muted);
-            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        footer code {
+            background: var(--bg-alt);
+            border: 1px solid var(--border-light);
+            padding: 0.15rem 0.4rem;
+            font-size: 0.65rem;
+        }
+
+        @media (max-width: 768px) {
+            .greeks-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .greek-item {
+                border-bottom: 1px solid var(--border-light);
+            }
+
+            .plot-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-left {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
@@ -259,31 +383,36 @@
 <body>
     <div class="container">
         <header>
-            <h1>Pricing Results</h1>
-            <a href="{{ url_for('main.index') }}" class="btn btn-outline">← New Calculation</a>
+            <div class="header-left">
+                <h1>Pricing Results</h1>
+                <a href="{{ url_for('main.index') }}" class="btn">← New Calculation</a>
+            </div>
+            <div class="theme-toggle">
+                <span>Light</span>
+                <button class="theme-btn" id="themeToggle" aria-label="Toggle theme"></button>
+                <span>Dark</span>
+            </div>
         </header>
 
-        <!-- Reproducibility Metadata -->
         <div class="metadata">
             <div class="metadata-grid">
                 <div class="metadata-item">
                     <span class="metadata-label">Option:</span>
-                    <span>{{ response.option_description }}</span>
+                    <span class="metadata-value">{{ response.option_description }}</span>
                 </div>
                 <div class="metadata-item">
                     <span class="metadata-label">Market:</span>
-                    <span>{{ response.market_description }}</span>
+                    <span class="metadata-value">{{ response.market_description }}</span>
                 </div>
                 <div class="metadata-item">
-                    <span class="metadata-label">Input Signature:</span>
-                    <span class="signature">{{ response.input_signature }}</span>
+                    <span class="metadata-label">Signature:</span>
+                    <code class="signature">{{ response.input_signature }}</code>
                 </div>
             </div>
         </div>
 
-        <!-- Price Comparison Table -->
-        <div class="card">
-            <h2>Model Comparison</h2>
+        <div class="section">
+            <div class="section-title">Model Comparison</div>
             <table>
                 <thead>
                     <tr>
@@ -298,20 +427,20 @@
                     {% for metric in comparison.model_metrics %}
                     <tr>
                         <td><strong>{{ metric.model_name }}</strong></td>
-                        <td class="price-value">${{ "%.4f"|format(metric.price) }}</td>
-                        <td class="error-value">
+                        <td class="price-cell">${{ "%.4f"|format(metric.price) }}</td>
+                        <td class="error-cell">
                             {% if metric.absolute_error == 0 %}
-                            <em>Baseline</em>
+                            <span class="baseline-tag">Baseline</span>
                             {% else %}
-                            {{ "%.6f"|format(metric.absolute_error) }}
-                            ({{ "%.2f"|format(metric.relative_error * 100) }}%)
+                            {{ "%.6f"|format(metric.absolute_error) }} ({{ "%.2f"|format(metric.relative_error * 100)
+                            }}%)
                             {% endif %}
                         </td>
-                        <td>{{ "%.2f"|format(metric.runtime_ms) }} ms</td>
+                        <td>{{ "%.2f"|format(metric.runtime_ms) }}ms</td>
                         <td>
                             {% if metric.warnings %}
                             {% for w in metric.warnings %}
-                            <span class="warning-badge">{{ w[:30] }}{% if w|length > 30 %}...{% endif %}</span>
+                            <span class="warning-tag">{{ w[:25] }}{% if w|length > 25 %}...{% endif %}</span>
                             {% endfor %}
                             {% else %}
                             ✓
@@ -322,117 +451,119 @@
                 </tbody>
             </table>
 
-            <p><strong>Summary:</strong> {{ comparison.summary }}</p>
-            {% if comparison.disagreement_explanation %}
-            <p style="margin-top: 0.5rem; color: var(--text-muted);">
-                {{ comparison.disagreement_explanation }}
-            </p>
-            {% endif %}
+            <div class="summary-text">
+                <strong>Summary:</strong> {{ comparison.summary }}
+                {% if comparison.disagreement_explanation %}
+                <br><span style="color: var(--text-muted);">{{ comparison.disagreement_explanation }}</span>
+                {% endif %}
+            </div>
         </div>
 
-        <!-- Plots -->
-        <div class="grid-2">
-            <div class="card">
-                <h2>Price Comparison</h2>
+        <div class="section">
+            <div class="section-title">Visualizations</div>
+            <div class="plot-grid">
                 <div class="plot-container">
-                    <img src="{{ response.comparison_plot }}" alt="Price Comparison Chart">
+                    <img src="{{ response.comparison_plot }}" alt="Price Comparison">
                 </div>
-            </div>
-
-            <div class="card">
-                <h2>Greeks Comparison</h2>
                 <div class="plot-container">
-                    <img src="{{ response.greeks_plot }}" alt="Greeks Comparison Chart">
+                    <img src="{{ response.greeks_plot }}" alt="Greeks Comparison">
                 </div>
             </div>
         </div>
 
-        <!-- Greeks Details -->
-        <div class="card">
-            <h2>Greeks by Model</h2>
-            {% for result in results %}
-            <h3 style="margin: 1rem 0 0.5rem;">{{ result.model_name }}</h3>
-            <div class="greeks-grid">
-                <div class="greek-item">
-                    <div class="greek-name">Delta</div>
-                    <div class="greek-value">{{ "%.4f"|format(result.greeks.delta or 0) }}</div>
-                </div>
-                <div class="greek-item">
-                    <div class="greek-name">Gamma</div>
-                    <div class="greek-value">{{ "%.4f"|format(result.greeks.gamma or 0) }}</div>
-                </div>
-                <div class="greek-item">
-                    <div class="greek-name">Vega</div>
-                    <div class="greek-value">{{ "%.4f"|format(result.greeks.vega or 0) }}</div>
-                </div>
-                <div class="greek-item">
-                    <div class="greek-name">Theta</div>
-                    <div class="greek-value">{{ "%.4f"|format(result.greeks.theta or 0) }}</div>
-                </div>
-                <div class="greek-item">
-                    <div class="greek-name">Rho</div>
-                    <div class="greek-value">{{ "%.4f"|format(result.greeks.rho or 0) }}</div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <!-- Convergence Analysis -->
-        {% if response.convergence_plots %}
-        <div class="card">
-            <h2>Convergence Analysis</h2>
-            <div class="grid-2">
-                {% for model_name, plot in response.convergence_plots.items() %}
-                <div>
-                    <h3 style="margin-bottom: 0.5rem;">{{ model_name }}</h3>
-                    <div class="plot-container">
-                        <img src="{{ plot }}" alt="{{ model_name }} Convergence">
+        <div class="section">
+            <div class="section-title">Greeks by Model</div>
+            <div class="greeks-container">
+                {% for result in results %}
+                <div class="greeks-model">
+                    <div class="greeks-model-name">{{ result.model_name }}</div>
+                    <div class="greeks-grid">
+                        <div class="greek-item">
+                            <div class="greek-name">Delta</div>
+                            <div class="greek-value">{{ "%.4f"|format(result.greeks.delta or 0) }}</div>
+                        </div>
+                        <div class="greek-item">
+                            <div class="greek-name">Gamma</div>
+                            <div class="greek-value">{{ "%.4f"|format(result.greeks.gamma or 0) }}</div>
+                        </div>
+                        <div class="greek-item">
+                            <div class="greek-name">Vega</div>
+                            <div class="greek-value">{{ "%.4f"|format(result.greeks.vega or 0) }}</div>
+                        </div>
+                        <div class="greek-item">
+                            <div class="greek-name">Theta</div>
+                            <div class="greek-value">{{ "%.4f"|format(result.greeks.theta or 0) }}</div>
+                        </div>
+                        <div class="greek-item">
+                            <div class="greek-name">Rho</div>
+                            <div class="greek-value">{{ "%.4f"|format(result.greeks.rho or 0) }}</div>
+                        </div>
                     </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if response.convergence_plots %}
+        <div class="section">
+            <div class="section-title">Convergence Analysis</div>
+            <div class="plot-grid">
+                {% for model_name, plot in response.convergence_plots.items() %}
+                <div class="plot-container">
+                    <img src="{{ plot }}" alt="{{ model_name }} Convergence">
                 </div>
                 {% endfor %}
             </div>
         </div>
         {% endif %}
 
-        <!-- Model Assumptions -->
-        <div class="card">
-            <h2>Model Assumptions & Limitations</h2>
+        <div class="section">
+            <div class="section-title">Model Assumptions</div>
             {% for model_summary in summary.model_summaries %}
-            <h3 style="margin: 1rem 0 0.5rem; color: var(--secondary);">{{ model_summary.name }}</h3>
-            <ul class="assumptions-list">
-                {% for assumption in model_summary.assumptions %}
-                <li>{{ assumption }}</li>
-                {% endfor %}
-            </ul>
-            {% if model_summary.warnings %}
-            <h4 style="margin-top: 0.5rem; color: var(--accent);">Warnings</h4>
-            <ul class="warnings-list">
-                {% for warning in model_summary.warnings %}
-                <li>{{ warning }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+            <div class="model-assumptions">
+                <div class="model-assumptions-title">{{ model_summary.name }}</div>
+                <ul class="assumptions-list">
+                    {% for assumption in model_summary.assumptions %}
+                    <li>{{ assumption }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
             {% endfor %}
         </div>
 
-        <!-- Disclaimer -->
         <div class="disclaimer">
-            <h3>Important Limitations</h3>
+            <div class="disclaimer-title">Important Limitations</div>
             <ul class="assumptions-list">
                 <li>Black-Scholes assumptions are unrealistic in practice</li>
-                <li>Constant volatility is a simplification - real markets exhibit volatility smiles/skews</li>
+                <li>Constant volatility is a simplification — real markets exhibit volatility smiles</li>
                 <li>Monte Carlo results are stochastic and may vary between runs</li>
-                <li>No dividends, transaction costs, or market frictions are modeled</li>
-                <li>These prices are for educational/research purposes only</li>
+                <li>No dividends, transaction costs, or market frictions modeled</li>
+                <li>Educational/research purposes only — not for trading decisions</li>
                 <li>Reproducibility guaranteed on same platform and Python version</li>
             </ul>
         </div>
 
         <footer>
-            <p>Option Pricing Engine • Educational/Research Use Only</p>
-            <p>Input Signature: <code class="signature">{{ response.input_signature }}</code></p>
+            <p>Option Pricing Engine — Educational/Research Use Only</p>
+            <p>Input Signature: <code>{{ response.input_signature }}</code></p>
         </footer>
     </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    </script>
 </body>
 
 </html>

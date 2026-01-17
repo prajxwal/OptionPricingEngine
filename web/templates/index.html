@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -7,18 +7,31 @@
     <title>Option Pricing Engine</title>
     <meta name="description"
         content="European option pricing engine with Black-Scholes, Binomial, and Monte Carlo models">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --primary: #2E86AB;
-            --secondary: #A23B72;
-            --accent: #F18F01;
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #212529;
-            --text-muted: #6c757d;
-            --border: #dee2e6;
-            --success: #28a745;
-            --error: #dc3545;
+            --bg: #fff;
+            --bg-alt: #f8f8f8;
+            --text: #000;
+            --text-muted: #666;
+            --border: #000;
+            --border-light: #ddd;
+            --input-bg: #fff;
+            --input-focus: #f5f5f5;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0a0a0a;
+            --bg-alt: #141414;
+            --text: #fff;
+            --text-muted: #888;
+            --border: #fff;
+            --border-light: #333;
+            --input-bg: #1a1a1a;
+            --input-focus: #222;
         }
 
         * {
@@ -28,47 +41,88 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Roboto Mono', monospace;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
+            font-size: 14px;
+            transition: background 0.3s, color 0.3s;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 3rem 2rem;
         }
 
         header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1.5rem;
         }
 
-        h1 {
-            color: var(--primary);
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+        .header-left h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
         }
 
         .subtitle {
+            font-size: 0.85rem;
             color: var(--text-muted);
-            font-size: 1rem;
+            margin-top: 0.5rem;
+            font-weight: 400;
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .card h2 {
-            color: var(--primary);
-            font-size: 1.25rem;
+        .theme-btn {
+            width: 44px;
+            height: 24px;
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        .theme-btn::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: var(--text);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        [data-theme="dark"] .theme-btn::after {
+            transform: translateX(20px);
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--border);
@@ -76,44 +130,64 @@
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 0;
         }
 
         label {
             display: block;
+            font-size: 0.7rem;
             font-weight: 600;
-            margin-bottom: 0.25rem;
-            font-size: 0.9rem;
-            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
         }
 
         input[type="text"],
         input[type="number"],
         select {
             width: 100%;
-            padding: 0.5rem;
+            padding: 0.75rem;
             border: 1px solid var(--border);
-            border-radius: 4px;
-            font-size: 1rem;
-            transition: border-color 0.2s;
+            background: var(--input-bg);
+            color: var(--text);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            transition: background 0.2s;
         }
 
         input:focus,
         select:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(46, 134, 171, 0.2);
+            background: var(--input-focus);
         }
 
-        .checkbox-group {
+        select option {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .info-text {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+
+        .checkbox-grid {
             display: flex;
+            gap: 2rem;
             flex-wrap: wrap;
-            gap: 1rem;
         }
 
         .checkbox-item {
@@ -123,66 +197,71 @@
         }
 
         .checkbox-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+            accent-color: var(--text);
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-size: 0.8rem;
+            text-transform: none;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .submit-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-light);
         }
 
         .btn {
             display: inline-block;
-            padding: 0.75rem 2rem;
-            font-size: 1rem;
+            padding: 1rem 3rem;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.8rem;
             font-weight: 600;
-            border: none;
-            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid var(--border);
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .btn-primary {
-            background: var(--primary);
-            color: white;
+            background: var(--text);
+            color: var(--bg);
         }
 
         .btn-primary:hover {
-            background: #256d8a;
-            transform: translateY(-1px);
-        }
-
-        .submit-section {
-            text-align: center;
-            margin-top: 1.5rem;
+            opacity: 0.85;
         }
 
         .flash-messages {
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
         }
 
         .flash {
             padding: 0.75rem 1rem;
-            border-radius: 4px;
+            font-size: 0.8rem;
+            border: 1px solid var(--border);
             margin-bottom: 0.5rem;
-        }
-
-        .flash.error {
-            background: #f8d7da;
-            color: var(--error);
-            border: 1px solid #f5c6cb;
-        }
-
-        .info-text {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
+            background: var(--bg-alt);
         }
 
         footer {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.7rem;
             color: var(--text-muted);
-            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0.25rem 0;
         }
     </style>
 </head>
@@ -190,8 +269,15 @@
 <body>
     <div class="container">
         <header>
-            <h1>Option Pricing Engine</h1>
-            <p class="subtitle">European Option Pricing with Model Comparison</p>
+            <div class="header-left">
+                <h1>Option Pricing Engine</h1>
+                <p class="subtitle">European Option Pricing with Model Comparison</p>
+            </div>
+            <div class="theme-toggle">
+                <span>Light</span>
+                <button class="theme-btn" id="themeToggle" aria-label="Toggle theme"></button>
+                <span>Dark</span>
+            </div>
         </header>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -207,87 +293,87 @@
         <form method="POST" action="{{ url_for('main.price') }}">
             {{ form.hidden_tag() }}
 
-            <div class="card">
-                <h2>Option Parameters</h2>
+            <div class="section">
+                <div class="section-title">Option Parameters</div>
                 <div class="form-grid">
                     <div class="form-group">
                         {{ form.option_type.label }}
-                        {{ form.option_type(class="form-control") }}
+                        {{ form.option_type() }}
                     </div>
                     <div class="form-group">
                         {{ form.strike.label }}
-                        {{ form.strike(class="form-control", step="0.01") }}
+                        {{ form.strike(step="0.01") }}
                     </div>
                     <div class="form-group">
                         {{ form.maturity.label }}
-                        {{ form.maturity(class="form-control", step="0.01") }}
+                        {{ form.maturity(step="0.01") }}
                         <p class="info-text">Time to expiration in years</p>
                     </div>
                 </div>
             </div>
 
-            <div class="card">
-                <h2>Market Parameters</h2>
+            <div class="section">
+                <div class="section-title">Market Parameters</div>
                 <div class="form-grid">
                     <div class="form-group">
                         {{ form.spot.label }}
-                        {{ form.spot(class="form-control", step="0.01") }}
+                        {{ form.spot(step="0.01") }}
                     </div>
                     <div class="form-group">
                         {{ form.volatility.label }}
-                        {{ form.volatility(class="form-control", step="0.01") }}
+                        {{ form.volatility(step="0.01") }}
                         <p class="info-text">e.g., 0.20 for 20%</p>
                     </div>
                     <div class="form-group">
                         {{ form.risk_free_rate.label }}
-                        {{ form.risk_free_rate(class="form-control", step="0.001") }}
+                        {{ form.risk_free_rate(step="0.001") }}
                         <p class="info-text">e.g., 0.05 for 5%</p>
                     </div>
                 </div>
             </div>
 
-            <div class="card">
-                <h2>Model Selection</h2>
-                <div class="checkbox-group">
+            <div class="section">
+                <div class="section-title">Model Selection</div>
+                <div class="checkbox-grid">
                     <div class="checkbox-item">
                         {{ form.use_black_scholes() }}
-                        {{ form.use_black_scholes.label }}
+                        <label for="use_black_scholes">Black-Scholes</label>
                     </div>
                     <div class="checkbox-item">
                         {{ form.use_binomial() }}
-                        {{ form.use_binomial.label }}
+                        <label for="use_binomial">Binomial (CRR)</label>
                     </div>
                     <div class="checkbox-item">
                         {{ form.use_monte_carlo() }}
-                        {{ form.use_monte_carlo.label }}
+                        <label for="use_monte_carlo">Monte Carlo</label>
                     </div>
                 </div>
             </div>
 
-            <div class="card">
-                <h2>Numerical Parameters</h2>
+            <div class="section">
+                <div class="section-title">Numerical Parameters</div>
                 <div class="form-grid">
                     <div class="form-group">
                         {{ form.num_steps.label }}
-                        {{ form.num_steps(class="form-control") }}
-                        <p class="info-text">For Binomial model (max: 1000)</p>
+                        {{ form.num_steps() }}
+                        <p class="info-text">Binomial model (max: 1000)</p>
                     </div>
                     <div class="form-group">
                         {{ form.num_paths.label }}
-                        {{ form.num_paths(class="form-control") }}
-                        <p class="info-text">For Monte Carlo (max: 500,000)</p>
+                        {{ form.num_paths() }}
+                        <p class="info-text">Monte Carlo (max: 500,000)</p>
                     </div>
                     <div class="form-group">
                         {{ form.seed.label }}
-                        {{ form.seed(class="form-control") }}
+                        {{ form.seed() }}
                         <p class="info-text">For reproducibility</p>
                     </div>
                 </div>
 
-                <div class="checkbox-group" style="margin-top: 1rem;">
+                <div class="checkbox-grid" style="margin-top: 1.5rem;">
                     <div class="checkbox-item">
                         {{ form.run_convergence() }}
-                        {{ form.run_convergence.label }}
+                        <label for="run_convergence">Run Convergence Analysis</label>
                     </div>
                 </div>
             </div>
@@ -298,10 +384,26 @@
         </form>
 
         <footer>
-            <p>Option Pricing Engine • Educational/Research Use Only</p>
+            <p>Option Pricing Engine — Educational/Research Use Only</p>
             <p>European options only • No dividends • Results may vary across platforms</p>
         </footer>
     </div>
+
+    <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    </script>
 </body>
 
 </html>
