@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option Pricing Engine</title>
+    <meta name="description"
+        content="European option pricing engine with Black-Scholes, Binomial, and Monte Carlo models">
+    <style>
+        :root {
+            --primary: #2E86AB;
+            --secondary: #A23B72;
+            --accent: #F18F01;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --text-muted: #6c757d;
+            --border: #dee2e6;
+            --success: #28a745;
+            --error: #dc3545;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h2 {
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(46, 134, 171, 0.2);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #256d8a;
+            transform: translateY(-1px);
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .flash-messages {
+            margin-bottom: 1rem;
+        }
+
+        .flash {
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .flash.error {
+            background: #f8d7da;
+            color: var(--error);
+            border: 1px solid #f5c6cb;
+        }
+
+        .info-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Option Pricing Engine</h1>
+            <p class="subtitle">European Option Pricing with Model Comparison</p>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('main.price') }}">
+            {{ form.hidden_tag() }}
+
+            <div class="card">
+                <h2>Option Parameters</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        {{ form.option_type.label }}
+                        {{ form.option_type(class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.strike.label }}
+                        {{ form.strike(class="form-control", step="0.01") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.maturity.label }}
+                        {{ form.maturity(class="form-control", step="0.01") }}
+                        <p class="info-text">Time to expiration in years</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Market Parameters</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        {{ form.spot.label }}
+                        {{ form.spot(class="form-control", step="0.01") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.volatility.label }}
+                        {{ form.volatility(class="form-control", step="0.01") }}
+                        <p class="info-text">e.g., 0.20 for 20%</p>
+                    </div>
+                    <div class="form-group">
+                        {{ form.risk_free_rate.label }}
+                        {{ form.risk_free_rate(class="form-control", step="0.001") }}
+                        <p class="info-text">e.g., 0.05 for 5%</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Model Selection</h2>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        {{ form.use_black_scholes() }}
+                        {{ form.use_black_scholes.label }}
+                    </div>
+                    <div class="checkbox-item">
+                        {{ form.use_binomial() }}
+                        {{ form.use_binomial.label }}
+                    </div>
+                    <div class="checkbox-item">
+                        {{ form.use_monte_carlo() }}
+                        {{ form.use_monte_carlo.label }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Numerical Parameters</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        {{ form.num_steps.label }}
+                        {{ form.num_steps(class="form-control") }}
+                        <p class="info-text">For Binomial model (max: 1000)</p>
+                    </div>
+                    <div class="form-group">
+                        {{ form.num_paths.label }}
+                        {{ form.num_paths(class="form-control") }}
+                        <p class="info-text">For Monte Carlo (max: 500,000)</p>
+                    </div>
+                    <div class="form-group">
+                        {{ form.seed.label }}
+                        {{ form.seed(class="form-control") }}
+                        <p class="info-text">For reproducibility</p>
+                    </div>
+                </div>
+
+                <div class="checkbox-group" style="margin-top: 1rem;">
+                    <div class="checkbox-item">
+                        {{ form.run_convergence() }}
+                        {{ form.run_convergence.label }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+
+        <footer>
+            <p>Option Pricing Engine • Educational/Research Use Only</p>
+            <p>European options only • No dividends • Results may vary across platforms</p>
+        </footer>
+    </div>
+</body>
+
+</html>
