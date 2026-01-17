@@ -118,6 +118,6 @@ class PricingInputs:
     numerical: NumericalParams = NumericalParams()
     
     def input_signature(self) -> str:
-        """Generate combined deterministic hash for full reproducibility."""
+        """Generate deterministic input hash for run identification and reproducibility checks."""
         combined = f"{self.option.input_signature()}-{self.market.input_signature()}-{self.numerical.input_signature()}"
         return hashlib.sha256(combined.encode()).hexdigest()[:24]
