@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -78,40 +78,23 @@
             font-weight: 400;
         }
 
-        .theme-toggle {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        .theme-btn {
+            padding: 0.5rem 1rem;
+            font-family: 'Roboto Mono', monospace;
             font-size: 0.7rem;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-
-        .theme-btn {
-            width: 44px;
-            height: 24px;
             background: var(--bg-alt);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            color: var(--text);
             cursor: pointer;
-            position: relative;
-            transition: background 0.3s;
+            transition: background 0.2s, color 0.2s;
         }
 
-        .theme-btn::after {
-            content: '';
-            position: absolute;
-            width: 18px;
-            height: 18px;
+        .theme-btn:hover {
             background: var(--text);
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: transform 0.3s;
-        }
-
-        [data-theme="dark"] .theme-btn::after {
-            transform: translateX(20px);
+            color: var(--bg);
         }
 
         .section {
@@ -273,11 +256,7 @@
                 <h1>Option Pricing Engine</h1>
                 <p class="subtitle">European Option Pricing with Model Comparison</p>
             </div>
-            <div class="theme-toggle">
-                <span>Light</span>
-                <button class="theme-btn" id="themeToggle" aria-label="Toggle theme"></button>
-                <span>Dark</span>
-            </div>
+            <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">Light</button>
         </header>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -393,15 +372,22 @@
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
 
+        function updateButtonText() {
+            const currentTheme = html.getAttribute('data-theme');
+            themeToggle.textContent = currentTheme === 'dark' ? 'Light' : 'Dark';
+        }
+
         // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'light';
+        const savedTheme = localStorage.getItem('theme') || 'dark';
         html.setAttribute('data-theme', savedTheme);
+        updateButtonText();
 
         themeToggle.addEventListener('click', () => {
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
+            updateButtonText();
         });
     </script>
 </body>
