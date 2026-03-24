@@ -1,107 +1,63 @@
 # Option Pricing Engine
+*it works. (we're as surprised as you are.)*
+## What Is This
 
-A modular, extensible European option pricing engine with Flask web interface for quantitative research and model comparison.
+A European option pricing engine with three models, a Greeks calculator, and a Flask web interface. Built instead of touching grass. The models disagree with each other. This is expected and has not been fixed.
 
 ## Features
 
-- **Three Pricing Models**: Black-Scholes (analytical), Binomial (CRR), Monte Carlo (GBM)
-- **Greeks Calculation**: Analytical and finite-difference methods
-- **Model Comparison**: Automatic benchmarking against Black-Scholes baseline
-- **Convergence Analysis**: Visualize how numerical models converge
-- **Web Interface**: Clean, responsive Flask application
-- **Reproducibility**: Seed-controlled randomness & input signatures
+- **Black-Scholes** — assumes volatility is constant. volatility has never been constant. the model is unaware and unbothered.
+- **Binomial Tree** — builds a recombining tree of future stock prices. also built in 1979. has not changed its personality since.
+- **Monte Carlo** — runs 10,000 simulations and averages them. confidently approximate.
+- **Greeks** — delta, gamma, vega, theta, rho. named after greek letters because the math is old and wanted you to feel that way.
+- **Model Comparison** — shows you how wrong each model is relative to the other models, which are also wrong.
+- **Convergence Analysis** — watch numerical methods slowly inch toward the analytical answer like they're apologizing.
+- **Web Interface** — flask app. runs on localhost. do not tell anyone about this in production.
+
+> **fun fact**: the Black-Scholes model won the Nobel Prize in 1997. the hedge fund co-founded by one of its authors blew up two years later. the model remains on the curriculum.
 
 ## Quick Start
-
 ```bash
-# Install dependencies
 pip install -r requirements.txt
-
-# Run the web application
 python -m web.app
-
-# Or run tests
-pytest tests/ -v
 ```
 
-Then open http://127.0.0.1:5000 in your browser.
+open http://127.0.0.1:5000. feel like a quant. you are not a quant.
 
 ## Project Structure
-
 ```
 OptionPricingEngine/
-├── core/                 # Domain objects and inputs
-│   ├── enums.py          # OptionType, ModelType
-│   ├── inputs.py         # Immutable, hashable input dataclasses
-│   ├── option.py         # Option contract abstraction
-│   └── market.py         # Market environment
-│
-├── models/               # Pricing models
-│   ├── base.py           # PricingModel ABC, PricingResult contract
-│   ├── black_scholes.py  # Analytical baseline
-│   ├── binomial.py       # CRR tree model
-│   └── monte_carlo.py    # GBM simulation
-│
-├── greeks/               # Sensitivity calculations
-│   ├── analytical.py     # Closed-form Greeks
-│   └── finite_difference.py  # Numerical Greeks
-│
-├── analysis/             # Research tools
-│   ├── comparison.py     # Multi-model comparison
-│   ├── convergence.py    # Convergence analysis
-│   └── experiments.py    # Parameter sweeps
-│
-├── reporting/            # Output generation
-│   ├── plots.py          # Centralized plotting
-│   └── summary.py        # Structured reports
-│
-├── web/                  # Flask application
-│   ├── app.py            # Application factory
-│   ├── routes.py         # HTTP endpoints
-│   ├── forms.py          # Input validation
-│   ├── services.py       # Bridge layer
-│   └── templates/        # HTML templates
-│
-├── tests/                # Unit tests
-├── config.py             # Configuration
-└── requirements.txt      # Dependencies
+├── core/          # respectable
+├── models/        # three ways to be approximately wrong
+├── greeks/        # sensitivities that won't save you
+├── analysis/      # for studying why the models fight
+├── web/           # please don't deploy this
+└── tests/         # they pass
 ```
 
-## Design Principles
+## Limitations
 
-1. **Separation of Concerns**: Pricing logic isolated from web layer
-2. **Reproducibility**: Immutable inputs with deterministic signatures
-3. **Numerical Rigor**: Cross-validation between analytical and numerical methods
-4. **Transparency**: Explicit model assumptions and limitations
+- no dividends, transaction costs, market impact, liquidity, or any of the things that actually determine option prices
+- monte carlo results are stochastic. the market doesn't care about your seed.
+- the risk-free rate input assumes risk-free things exist
+- **do not trade on this. please. we're asking nicely.**
 
-## Important Limitations
-
-- Black-Scholes assumptions are unrealistic in practice
-- Constant volatility is a simplification
-- Monte Carlo results are stochastic
-- No dividends, transaction costs, or market frictions
-- **Educational/research use only - not for trading decisions**
-
-## API Usage
-
+## API
 ```python
-from core.option import Option
-from core.market import MarketEnvironment
-from core.enums import OptionType
-from models.black_scholes import BlackScholesModel
-
-# Create domain objects
 option = Option(strike=100, maturity=1.0, option_type=OptionType.CALL)
 market = MarketEnvironment(spot=100, volatility=0.20, risk_free_rate=0.05)
 
-# Price with Black-Scholes
-model = BlackScholesModel()
-result = model.compute(option, market)
-
-print(f"Price: {result.price:.4f}")
-print(f"Delta: {result.greeks.delta:.4f}")
+result = BlackScholesModel().compute(option, market)
+print(result.price)  # precise-looking number based on assumptions that don't hold
+                     # this is also how wall street works, so you're fine
 ```
+
+## Why
+
+a cs student wanted to understand options pricing. this was faster than reading hull.
+
+the code is fine. the math is correct given that the math is a simplification of a system that ignores the math. 
 
 ## License
 
-Educational use only.
+educational use only. if you use this to trade, that's between you and your broker.
