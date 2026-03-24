@@ -1,5 +1,5 @@
 # Option Pricing Engine
-*it works. (we're as surprised as you are.)*
+*it works. (I'm as surprised as you are.)*
 ## What Is This
 
 A European option pricing engine with three models, a Greeks calculator, and a Flask web interface. Built instead of touching grass. The models disagree with each other. This is expected and has not been fixed.
